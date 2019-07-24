@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  proxy:
+    image: traefik
+    container_name: traefik
+    networks:
+      - traefik
+    command:
+      - "--api"
+      - "--docker"
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "443:443"
+    volumes:
+      - "/opt/traefik/traefik.toml:/etc/traefik/traefik.toml"
+      - "/opt/traefik/acme.json:/etc/traefik/acme"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: unless-stopped
+    labels:
+      - "traefik.frontend.rule=Host:traefik.cloudamoi.ovh"
+      - "traefik.port=8080"
+      - "traefik.backend=traefik"
+      - "traefik.frontend.entryPoints=http,https"
+      - "traefik.frontend.auth.basic=user:$$password" (use script htpassword.sh)
+
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    networks:
+      - traefik
+    labels:
+      - "traefik.frontend.rule=Host:admin.cloudamoi.ovh"
+      - "traefik.port=9000"
+      - "traefik.backend=portainer"
+      - "traefik.frontend.entryPoints=http,https"
+    volumes:
+        - "/opt/portainer:/data"
+        - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: unless-stopped
+
+networks:
+  traefik:
+    external:
+      name: traefik
