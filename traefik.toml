@@ -1,0 +1,45 @@
+#Comment out when done.
+#logLevel = "DEBUG"
+logLevel = "INFO"
+
+
+
+defaultEntryPoints = ["http","https"]
+
+#[web]
+  #Run Traefik info page at 8080.
+#  address = ":8080"
+#[web.auth.basic]
+#users = ["user:$password"]
+
+[entryPoints]
+  [entryPoints.http]
+    #redirect ALL http traffic to https 443
+    address = ":80"
+
+entrypoint="foo"
+      [entryPoints.http.redirect]
+      entryPoint = "https"
+  [entryPoints.https]
+    address = ":443"
+    [entryPoints.https.tls]
+
+#Let's encrypt setup
+[acme]
+  email = "@mail"
+  storage = "acme.json"
+  entryPoint = "https"
+  #When new host is created, request certificate.
+  onHostRule = true
+  #caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  [acme.httpChallenge]
+    entryPoint = "http"
+
+#Watch Docker, when new containers are created with label create mapping.
+[docker]
+  endpoint = "unix:///var/run/docker.sock"
+  domain = "traefik.cloudamoi.ovh"
+  watch = true
+[[acme.domains]]
+  main = "traefik.cloudamoi.ovh"
+  sans = ["admin.cloudamoi.ovh", "cloud.cloudamoi.ovh"]
