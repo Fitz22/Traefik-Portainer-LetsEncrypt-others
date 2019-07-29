@@ -14,8 +14,8 @@ services:
       - "8080:8080"
       - "443:443"
     volumes:
-      - "/opt/traefik/traefik.toml:/etc/traefik/traefik.toml"
-      - "/opt/traefik/acme.json:/etc/traefik/acme"
+      - "/opt/docker/traefik/traefik.toml:/etc/traefik/traefik.toml"
+      - "/opt/docker/traefik/acme.json:/etc/traefik/acme"
       - "/var/run/docker.sock:/var/run/docker.sock"
     restart: unless-stopped
     labels:
@@ -36,7 +36,7 @@ services:
       - "traefik.backend=portainer"
       - "traefik.frontend.entryPoints=http,https"
     volumes:
-        - "/opt/portainer:/data"
+        - "/opt/docker/portainer:/data"
         - "/var/run/docker.sock:/var/run/docker.sock"
     restart: unless-stopped
 
@@ -44,3 +44,4 @@ networks:
   traefik:
     external:
       name: traefik
+:wq
