@@ -44,4 +44,3 @@ networks:
   traefik:
     external:
       name: traefik
-:wq
